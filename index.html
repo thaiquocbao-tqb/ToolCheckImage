@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f2ed">
+  <title>Đối chiếu tài liệu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4f2ed;
+      --white: #fffefa;
+      --ink: #202c2a;
+      --muted: #727a75;
+      --line: #dddfd8;
+      --green: #176b58;
+      --green-soft: #e4f2eb;
+      --red: #b74d3d;
+      --red-soft: #fae9e4;
+      --yellow: #efd879;
+      --shadow: 0 12px 30px rgba(35, 47, 40, .06);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 14px; }
+    button, select { font: inherit; }
+    button { cursor: pointer; }
+    .topbar { height: 66px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; padding: 0 5.4vw; background: rgba(255,254,250,.66); }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 700; letter-spacing: 0; }
+    .brand-mark { width: 30px; height: 30px; background: var(--green); border-radius: 8px 8px 8px 2px; display: grid; place-items: center; color: white; }
+    .brand-mark svg { width: 17px; height: 17px; }
+    .top-note { color: var(--muted); font-size: 12px; }
+    main { max-width: 1160px; padding: 43px 28px 80px; margin: auto; }
+    .intro { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin: 0 0 30px; }
+    .eyebrow { text-transform: uppercase; color: var(--green); font-size: 10px; font-weight: 700; letter-spacing: 1.4px; margin: 0 0 10px; }
+    h1 { font: 500 38px/1.12 'Newsreader', Georgia, serif; letter-spacing: 0; margin: 0; }
+    .intro-copy { color: var(--muted); line-height: 1.65; max-width: 310px; margin: 0 0 3px; }
+    .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .upload-card { background: var(--white); border: 1px solid var(--line); border-radius: 8px; padding: 19px; min-width: 0; box-shadow: var(--shadow); }
+    .card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .card-title { display: flex; gap: 10px; align-items: center; font-weight: 700; }
+    .step { display: grid; place-items: center; width: 25px; height: 25px; color: var(--green); background: var(--green-soft); border-radius: 50%; font-size: 11px; }
+    .file-kind { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .7px; text-transform: uppercase; }
+    .dropzone { height: 164px; border: 1px dashed #b9c3b9; border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 14px; cursor: pointer; background: #fbfaf6; transition: border-color .18s, background .18s, transform .18s; }
+    .dropzone:hover, .dropzone.dragover { border-color: var(--green); background: #f0f7f2; }
+    .dropzone.dragover { transform: scale(1.01); }
+    .upload-icon { width: 34px; height: 34px; color: var(--green); margin-bottom: 10px; }
+    .drop-primary { font-weight: 600; }
+    .drop-secondary { margin-top: 5px; font-size: 12px; color: var(--muted); }
+    .drop-secondary strong { color: var(--green); font-weight: 600; }
+    .file-input { display: none; }
+    .file-info { display: none; width: 100%; align-items: center; gap: 12px; text-align: left; }
+    .file-info.visible { display: flex; }
+    .file-icon { display: grid; place-items: center; flex: 0 0 38px; height: 44px; background: var(--green-soft); color: var(--green); font-size: 10px; font-weight: 700; border-radius: 4px; }
+    .file-name { overflow-wrap: anywhere; font-weight: 600; }
+    .file-size { color: var(--muted); font-size: 11px; margin-top: 4px; }
+    .file-preview { max-width: 100%; max-height: 130px; object-fit: contain; border-radius: 3px; }
+    .file-info:has(.file-preview) { justify-content: center; }
+    .setup-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin: 18px 1px 0; }
+    .privacy { display: flex; gap: 7px; align-items: center; font-size: 12px; color: var(--muted); }
+    .privacy svg { color: var(--green); width: 15px; height: 15px; }
+    .language-control { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 12px; }
+    select { border: 1px solid var(--line); background: var(--white); color: var(--ink); border-radius: 4px; padding: 8px 30px 8px 10px; }
+    .action-row { display: flex; justify-content: center; margin: 23px 0 0; }
+    .compare-button { display: inline-flex; align-items: center; gap: 9px; padding: 12px 23px; color: white; background: var(--green); border: 0; border-radius: 4px; font-weight: 700; transition: background .18s, transform .18s; }
+    .compare-button:hover:not(:disabled) { background: #105642; transform: translateY(-1px); }
+    .compare-button:disabled { cursor: not-allowed; background: #aeb8b0; }
+    .compare-button svg { width: 17px; height: 17px; }
+    .progress-wrap { display: none; max-width: 570px; margin: 21px auto 0; }
+    .progress-wrap.visible { display: block; }
+    .progress-label { display: flex; justify-content: space-between; gap: 16px; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .progress-track { height: 4px; background: #dce2dc; border-radius: 9px; overflow: hidden; }
+    .progress-bar { height: 100%; width: 0; background: var(--green); transition: width .22s ease; }
+    .error { display: none; margin: 17px auto 0; max-width: 720px; padding: 11px 14px; color: #923c31; background: var(--red-soft); border-radius: 4px; line-height: 1.5; }
+    .error.visible { display: block; }
+    .results { display: none; margin-top: 43px; animation: rise .4s ease both; }
+    .results.visible { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .results-head { display: flex; justify-content: space-between; align-items: end; gap: 20px; border-bottom: 1px solid var(--line); padding-bottom: 15px; margin-bottom: 15px; }
+    .results-head h2 { font: 500 25px/1.2 'Newsreader', Georgia, serif; margin: 0; }
+    .result-meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
+    .stats { display: flex; gap: 8px; }
+    .stat { border-radius: 4px; padding: 7px 10px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .stat.removed { background: var(--red-soft); color: var(--red); }
+    .stat.added { background: var(--green-soft); color: var(--green); }
+    .match-banner { display: none; padding: 13px 15px; border-radius: 4px; color: #285b49; background: #e5f1e9; margin-bottom: 14px; font-weight: 600; }
+    .match-banner.visible { display: block; }
+    .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .diff-pane { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--white); min-width: 0; }
+    .pane-head { padding: 11px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 12px; }
+    .pane-head span:last-child { color: var(--muted); font-weight: 500; }
+    .diff-text { padding: 17px; min-height: 150px; max-height: 480px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.85 'DM Sans', sans-serif; }
+    mark { border-radius: 2px; padding: 1px 0; }
+    mark.removed { background: var(--red-soft); color: #8c372d; text-decoration: line-through; text-decoration-color: #b74d3d88; }
+    mark.added { background: var(--green-soft); color: #14513f; }
+    .legend { color: var(--muted); font-size: 11px; display: flex; gap: 15px; margin: 12px 2px 0; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .legend i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+    .legend .red { background: #e9b8ad; }
+    .legend .green { background: #a7d1b8; }
+    footer { text-align: center; color: #90958e; font-size: 11px; margin-top: 54px; }
+    @media (max-width: 700px) {
+      .topbar { height: 58px; padding: 0 20px; }
+      .top-note { display: none; }
+      main { padding: 31px 16px 56px; }
+      .intro { display: block; margin-bottom: 22px; }
+      h1 { font-size: 33px; }
+      .intro-copy { margin-top: 12px; max-width: 420px; }
+      .upload-grid, .diff-grid { grid-template-columns: 1fr; }
+      .upload-card { padding: 15px; }
+      .dropzone { height: 145px; }
+      .results-head { align-items: start; flex-direction: column; }
+      .diff-text { max-height: 310px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3.8h7l4 4v12.4H7z"/><path d="M14 3.8v4h4M9.5 12h6M9.5 15.5h6"/></svg></span>
+      <span>Đối chiếu tài liệu</span>
+    </div>
+    <span class="top-note">Ảnh ↔ PDF · xử lý ngay trên thiết bị</span>
+  </header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow">So sánh nội dung</p><h1>Tìm điểm khác nhau,<br>không bỏ sót chi tiết.</h1></div>
+      <p class="intro-copy">Tải lên một ảnh và một PDF. Văn bản được trích xuất và đối chiếu ngay trong trình duyệt của bạn.</p>
+    </section>
+
+    <section aria-label="Tài liệu đầu vào">
+      <div class="upload-grid">
+        <article class="upload-card">
+          <div class="card-head"><div class="card-title"><span class="step">01</span>Ảnh cần đối chiếu</div><span class="file-kind">PNG · JPG · WEBP</span></div>
+          <label class="dropzone" id="imageDrop" for="imageInput">
+            <svg class="upload-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4.5" y="5.5" width="23" height="21" rx="3"/><circle cx="12" cy="13" r="2.5"/><path d="m6 23 7-7 5 5 3-3 5.5 5.5"/><path d="M16 2v8m-3-3 3 3 3-3"/></svg>
+            <span class="drop-primary">Kéo ảnh vào đây</span><span class="drop-secondary">hoặc <strong>chọn từ thiết bị</strong></span>
+            <div class="file-info" id="imageInfo"></div>
+          </label>
+          <input class="file-input" id="imageInput" type="file" accept="image/png,image/jpeg,image/webp,image/bmp">
+        </article>
+        <article class="upload-card">
+          <div class="card-head"><div class="card-title"><span class="step">02</span>Tài liệu PDF</div><span class="file-kind">PDF · tối đa 50 MB</span></div>
+          <label class="dropzone" id="pdfDrop" for="pdfInput">
+            <svg class="upload-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3.5h10l6 6v18H8z"/><path d="M18 3.5v6h6M11 16h10M11 19.5h10M11 23h7"/><path d="M5 7v22h17"/></svg>
+            <span class="drop-primary">Kéo PDF vào đây</span><span class="drop-secondary">hoặc <strong>chọn từ thiết bị</strong></span>
+            <div class="file-info" id="pdfInfo"></div>
+          </label>
+          <input class="file-input" id="pdfInput" type="file" accept="application/pdf,.pdf">
+        </article>
+      </div>
+      <div class="setup-row">
+        <span class="privacy"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="8" width="12" height="9" rx="2"/><path d="M6.5 8V5.5a3.5 3.5 0 0 1 7 0V8M10 11v3"/></svg>Tệp không rời khỏi thiết bị của bạn</span>
+        <label class="language-control" for="languageSelect">Ngôn ngữ OCR
+          <select id="languageSelect"><option value="vie+eng">Tiếng Việt + English</option><option value="eng">English</option></select>
+        </label>
+      </div>
+      <div class="action-row"><button class="compare-button" id="compareButton" type="button" disabled><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 5h14M3 10h14M3 15h14"/><path d="M7 3v4m6 1v4m-6 1v4"/></svg><span>Bắt đầu so sánh</span></button></div>
+      <div class="progress-wrap" id="progressWrap" aria-live="polite"><div class="progress-label"><span id="progressText">Đang chuẩn bị...</span><span id="progressPercent">0%</span></div><div class="progress-track"><div class="progress-bar" id="progressBar"></div></div></div>
+      <div class="error" id="errorMessage" role="alert"></div>
+    </section>
+
+    <section class="results" id="results" aria-live="polite">
+      <div class="results-head"><div><h2>Kết quả đối chiếu</h2><div class="result-meta" id="resultMeta"></div></div><div class="stats"><span class="stat removed" id="removedStat">− 0 khác biệt</span><span class="stat added" id="addedStat">+ 0 khác biệt</span></div></div>
+      <div class="match-banner" id="matchBanner">Nội dung trích xuất khớp nhau.</div>
+      <div class="diff-grid">
+        <article class="diff-pane"><div class="pane-head"><span>VĂN BẢN TỪ ẢNH</span><span id="imageWordCount"></span></div><div class="diff-text" id="imageText"></div></article>
+        <article class="diff-pane"><div class="pane-head"><span>VĂN BẢN TỪ PDF</span><span id="pdfWordCount"></span></div><div class="diff-text" id="pdfText"></div></article>
+      </div>
+      <div class="legend"><span><i class="red"></i>Có trong ảnh, không có trong PDF</span><span><i class="green"></i>Có trong PDF, không có trong ảnh</span></div>
+    </section>
+    <footer>Đối chiếu tài liệu · xử lý cục bộ trong trình duyệt</footer>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+  <script type="module">
+    import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs';
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
+
+    const imageInput = document.querySelector('#imageInput');
+    const pdfInput = document.querySelector('#pdfInput');
+    const compareButton = document.querySelector('#compareButton');
+    const progressWrap = document.querySelector('#progressWrap');
+    const progressText = document.querySelector('#progressText');
+    const progressPercent = document.querySelector('#progressPercent');
+    const progressBar = document.querySelector('#progressBar');
+    const errorMessage = document.querySelector('#errorMessage');
+    const results = document.querySelector('#results');
+    const files = { image: null, pdf: null };
+    let imagePreviewUrl = null;
+
+    function formatSize(bytes) {
+      if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    function setFile(type, file) {
+      const validImage = /^image\/(png|jpeg|webp|bmp)$/.test(file.type);
+      if (type === 'image' && !validImage) return showError('Vui lòng chọn ảnh PNG, JPG, WEBP hoặc BMP.');
+      if (type === 'pdf' && (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf'))) return showError('Tệp thứ hai cần có định dạng PDF.');
+      if (type === 'pdf' && file.size > 50 * 1024 * 1024) return showError('PDF vượt quá giới hạn 50 MB.');
+      hideError();
+      files[type] = file;
+      const info = document.querySelector(`#${type}Info`);
+      const drop = document.querySelector(`#${type}Drop`);
+      drop.querySelectorAll(':scope > svg, :scope > .drop-primary, :scope > .drop-secondary').forEach((element) => element.style.display = 'none');
+      info.classList.add('visible');
+      if (type === 'image') {
+        if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+        imagePreviewUrl = URL.createObjectURL(file);
+      }
+      info.innerHTML = type === 'image'
+        ? `<img class="file-preview" src="${imagePreviewUrl}" alt="Xem trước ảnh">`
+        : `<span class="file-icon">PDF</span><span><span class="file-name">${escapeHtml(file.name)}</span><span class="file-size">${formatSize(file.size)}</span></span>`;
+      compareButton.disabled = !(files.image && files.pdf);
+      results.classList.remove('visible');
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+    }
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.classList.add('visible');
+    }
+    function hideError() { errorMessage.classList.remove('visible'); }
+
+    [ ['image', imageInput], ['pdf', pdfInput] ].forEach(([type, input]) => {
+      input.addEventListener('change', () => { if (input.files[0]) setFile(type, input.files[0]); });
+      const drop = document.querySelector(`#${type}Drop`);
+      drop.addEventListener('dragover', (event) => { event.preventDefault(); drop.classList.add('dragover'); });
+      drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
+      drop.addEventListener('drop', (event) => {
+        event.preventDefault();
+        drop.classList.remove('dragover');
+        if (event.dataTransfer.files[0]) setFile(type, event.dataTransfer.files[0]);
+      });
+    });
+
+    function setProgress(label, percent) {
+      progressText.textContent = label;
+      progressPercent.textContent = `${Math.round(percent)}%`;
+      progressBar.style.width = `${percent}%`;
+    }
+
+    async function extractImageText(file) {
+      if (!window.Tesseract) throw new Error('Không tải được bộ OCR. Hãy kiểm tra kết nối mạng rồi thử lại.');
+      const worker = await Tesseract.createWorker(document.querySelector('#languageSelect').value, 1, {
+        logger: (message) => {
+          if (message.status === 'recognizing text') setProgress('Đang nhận diện chữ trong ảnh...', 8 + message.progress * 48);
+        }
+      });
+      try {
+        const { data } = await worker.recognize(file);
+        return data.text.trim();
+      } finally {
+        await worker.terminate();
+      }
+    }
+
+    async function extractPdfText(file) {
+      const documentTask = pdfjsLib.getDocument({ data: await file.arrayBuffer() });
+      const pdf = await documentTask.promise;
+      const pages = [];
+      let scannedPageCount = 0;
+      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+        setProgress(`Đang đọc PDF · trang ${pageNumber}/${pdf.numPages}...`, 58 + (pageNumber - 1) / pdf.numPages * 37);
+        const page = await pdf.getPage(pageNumber);
+        const content = await page.getTextContent();
+        const pageText = content.items.map((item) => item.str).join(' ').trim();
+        if (pageText.length > 20) {
+          pages.push(pageText);
+          continue;
+        }
+        scannedPageCount += 1;
+        const viewport = page.getViewport({ scale: 1.7 });
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        if (!window.Tesseract) throw new Error('Không tải được bộ OCR để đọc trang PDF dạng scan.');
+        const worker = await Tesseract.createWorker(document.querySelector('#languageSelect').value, 1);
+        try {
+          const { data } = await worker.recognize(canvas);
+          pages.push(data.text.trim());
+        } finally {
+          await worker.terminate();
+        }
+      }
+      return { text: pages.join('\n\n'), pageCount: pdf.numPages, scannedPageCount };
+    }
+
+    function normalizeToken(token) {
+      return token.normalize('NFC').toLocaleLowerCase('vi').replace(/[.,;:!?()[\]{}"“”‘’]/g, '');
+    }
+
+    function buildDiff(leftText, rightText) {
+      const left = leftText.match(/\s+|[^\s]+/gu) || [];
+      const right = rightText.match(/\s+|[^\s]+/gu) || [];
+      if (left.length * right.length > 1800000) {
+        const same = normalizeToken(leftText.replace(/\s+/g, ' ')) === normalizeToken(rightText.replace(/\s+/g, ' '));
+        return same ? { left: [{ type: 'same', text: leftText }], right: [{ type: 'same', text: rightText }], removed: 0, added: 0 }
+          : { left: [{ type: 'removed', text: leftText }], right: [{ type: 'added', text: rightText }], removed: leftText.trim().split(/\s+/u).filter(Boolean).length, added: rightText.trim().split(/\s+/u).filter(Boolean).length };
+      }
+      const width = right.length + 1;
+      const table = new Uint32Array((left.length + 1) * width);
+      for (let i = left.length - 1; i >= 0; i -= 1) {
+        for (let j = right.length - 1; j >= 0; j -= 1) {
+          table[i * width + j] = normalizeToken(left[i]) === normalizeToken(right[j])
+            ? table[(i + 1) * width + j + 1] + 1
+            : Math.max(table[(i + 1) * width + j], table[i * width + j + 1]);
+        }
+      }
+      const leftParts = [];
+      const rightParts = [];
+      let removed = 0;
+      let added = 0;
+      const push = (parts, type, text) => {
+        const last = parts[parts.length - 1];
+        if (last?.type === type) last.text += text;
+        else parts.push({ type, text });
+      };
+      let i = 0;
+      let j = 0;
+      while (i < left.length && j < right.length) {
+        if (normalizeToken(left[i]) === normalizeToken(right[j])) {
+          push(leftParts, 'same', left[i]); push(rightParts, 'same', right[j]); i += 1; j += 1;
+        } else if (table[(i + 1) * width + j] >= table[i * width + j + 1]) {
+          push(leftParts, 'removed', left[i]);
+          if (!/^\s+$/u.test(left[i])) removed += 1;
+          i += 1;
+        } else {
+          push(rightParts, 'added', right[j]);
+          if (!/^\s+$/u.test(right[j])) added += 1;
+          j += 1;
+        }
+      }
+      while (i < left.length) { push(leftParts, 'removed', left[i]); if (!/^\s+$/u.test(left[i])) removed += 1; i += 1; }
+      while (j < right.length) { push(rightParts, 'added', right[j]); if (!/^\s+$/u.test(right[j])) added += 1; j += 1; }
+      return { left: leftParts, right: rightParts, removed, added };
+    }
+
+    function renderParts(parts) {
+      return parts.map(({ type, text }) => type === 'same' ? escapeHtml(text) : `<mark class="${type}">${escapeHtml(text)}</mark>`).join('');
+    }
+
+    function wordCount(text) { return text.trim() ? text.trim().split(/\s+/u).length : 0; }
+
+    compareButton.addEventListener('click', async () => {
+      hideError();
+      results.classList.remove('visible');
+      progressWrap.classList.add('visible');
+      compareButton.disabled = true;
+      compareButton.querySelector('span').textContent = 'Đang xử lý...';
+      try {
+        setProgress('Đang nhận diện chữ trong ảnh...', 3);
+        const imageText = await extractImageText(files.image);
+        if (!imageText) throw new Error('Không tìm thấy chữ trong ảnh. Hãy thử ảnh rõ nét hơn.');
+        setProgress('Đang trích xuất nội dung PDF...', 58);
+        const pdfResult = await extractPdfText(files.pdf);
+        if (!pdfResult.text) throw new Error('Không tìm thấy chữ trong PDF. Hãy kiểm tra tài liệu hoặc chọn đúng ngôn ngữ OCR.');
+        setProgress('Đang đối chiếu văn bản...', 98);
+        const diff = buildDiff(imageText, pdfResult.text);
+        document.querySelector('#imageText').innerHTML = renderParts(diff.left);
+        document.querySelector('#pdfText').innerHTML = renderParts(diff.right);
+        document.querySelector('#imageWordCount').textContent = `${wordCount(imageText)} từ`;
+        document.querySelector('#pdfWordCount').textContent = `${wordCount(pdfResult.text)} từ`;
+        document.querySelector('#removedStat').textContent = `− ${diff.removed} khác biệt`;
+        document.querySelector('#addedStat').textContent = `+ ${diff.added} khác biệt`;
+        document.querySelector('#resultMeta').textContent = `${pdfResult.pageCount} trang PDF${pdfResult.scannedPageCount ? ` · đã OCR ${pdfResult.scannedPageCount} trang scan` : ' · PDF có văn bản'}`;
+        document.querySelector('#matchBanner').classList.toggle('visible', diff.removed === 0 && diff.added === 0);
+        setProgress('Đã hoàn tất đối chiếu.', 100);
+        results.classList.add('visible');
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (error) {
+        showError(error.message || 'Có lỗi khi xử lý tài liệu. Vui lòng thử lại.');
+      } finally {
+        compareButton.disabled = !(files.image && files.pdf);
+        compareButton.querySelector('span').textContent = 'Bắt đầu so sánh';
+      }
+    });
+  </script>
+</body>
+</html>
